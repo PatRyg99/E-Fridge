@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:e_fridge/screens/home_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,37 +12,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.indigo,
       ),
-      home: MyHomePage(title: 'E-Fridge'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-
-  void _showInfoDialog(){
-
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          title: Text(widget.title),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.info_outline),
-              onPressed: _showInfoDialog,
-            ),
-          ]
-      ),
+      home: HomePage(title: 'E-Fridge'),
     );
   }
 }

@@ -27,7 +27,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  sqflite: any
+  path_provider: any
+  intl: ^0.16.0
+  image_picker: ^0.6.0+17
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -39,6 +42,13 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - fridge.png
+    - shopping_list.png
+    - app_icon.png
+    - cutlery.png
+    - list.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
