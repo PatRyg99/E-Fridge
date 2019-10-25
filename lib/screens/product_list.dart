@@ -23,6 +23,8 @@ class _ProductListState extends State<ProductList> {
   List<Product> productList;
   int parentId;
   int count = 0;
+  bool _sortDesc = false;
+  String _sortBy = 'Name';
 
   final TextEditingController searchController = TextEditingController();
 
@@ -65,6 +67,36 @@ class _ProductListState extends State<ProductList> {
                 ),
               ),
             ),
+            Padding(
+              padding: EdgeInsets.only(left: 5.0),
+                child: ListTile(
+                  title: new Row(
+                  children: <Widget>[
+                    Text("Sort by: "),
+                    Container(width: 10),
+                    DropdownButton<String>(
+                      value: _sortBy,
+                      items: sortOptions(),
+                      onChanged: (String sortBy) {
+                        _sortBy = sortBy;
+                        _sort();
+                      },
+                    ),
+                    Container(width: 10),
+                    GestureDetector(
+                      child: new Icon(
+                        _sortDesc ? Icons.arrow_downward : Icons.arrow_upward,
+                        color: Colors.black45
+                      ),
+                      onTap: () {
+                        _sortDesc = !_sortDesc;
+                        _sort();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
             Divider(),
             Expanded(
               child: count>0 ? getProductListView() : defaultText(),
@@ -79,6 +111,21 @@ class _ProductListState extends State<ProductList> {
         child: Icon(Icons.add),
       ),
     );
+  }
+
+  List<DropdownMenuItem<String>> sortOptions() {
+    if(parentId == 0) {
+      return <DropdownMenuItem<String>>[
+        new DropdownMenuItem(child: new Text('Name'), value: 'Name'),
+        new DropdownMenuItem(child: new Text('Quantity'), value: 'Quantity'),
+        new DropdownMenuItem(child: new Text('Expiration date'), value: 'Expiration date'),
+      ];
+    } else {
+      return <DropdownMenuItem<String>>[
+        new DropdownMenuItem(child: new Text('Name'), value: 'Name'),
+        new DropdownMenuItem(child: new Text('Quantity'), value: 'Quantity'),
+      ];
+    }
   }
 
   Widget defaultText(){
@@ -128,7 +175,7 @@ class _ProductListState extends State<ProductList> {
                   style: new TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
                 ),
                 parentId==1 ? new Container() : new Text(
-                  "Expiration date: "+this.productList[position].expirationDate,
+                  "Expiration date:\n"+this.productList[position].expirationDate,
                   style: new TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
                 )
               ],
@@ -234,6 +281,8 @@ class _ProductListState extends State<ProductList> {
     );
   }
 
+
+
   void  _migrate(Product product) async {
     int result = await databaseHelper.migrateProduct(product);
     if(result != 0) {
@@ -270,16 +319,16 @@ class _ProductListState extends State<ProductList> {
               content: Text("Product: "+product.name+" will be deleted"),
               actions: <Widget>[
                 new FlatButton(
-                  child: new Text("Accept"),
-                  onPressed: (){
-                    Navigator.of(context).pop();
-                    _delete(product);
-                  }
-                ),
-                new FlatButton(
                     child: new Text("Cancel"),
                     onPressed: (){
                       Navigator.of(context).pop();
+                    }
+                ),
+                new FlatButton(
+                    child: new Text("Accept"),
+                    onPressed: (){
+                      Navigator.of(context).pop();
+                      _delete(product);
                     }
                 ),
               ]
@@ -296,6 +345,49 @@ class _ProductListState extends State<ProductList> {
     }
   }
 
+  void _sort() {
+
+    switch (_sortBy) {
+
+      case 'Name':
+        setState(() {
+          if(_sortDesc){
+            productList.sort((x,y) => y.name.compareTo(x.name));
+          } else {
+            productList.sort((x,y) => x.name.compareTo(y.name));
+          }
+        });
+        break;
+
+      case 'Quantity':
+        setState(() {
+          if (_sortDesc) {
+            productList.sort((x, y) => y.quantity < x.quantity ? 1 : 0);
+          } else {
+            productList.sort((x, y) => x.quantity < y.quantity ? 1 : 0);
+          }
+        });
+        break;
+
+      case 'Expiration date':
+        setState(() {
+          if (_sortDesc) {
+            productList.sort((x, y) =>
+                new DateFormat("yMMMd").parse(y.expirationDate).compareTo(
+                    new DateFormat("yMMMd").parse(x.expirationDate)
+                )
+            );
+          } else {
+            productList.sort((x, y) =>
+                new DateFormat("yMMMd").parse(x.expirationDate).compareTo(
+                    new DateFormat("yMMMd").parse(y.expirationDate)
+                )
+            );
+          }
+        });
+        break;
+      }
+  }
 
   void _showSnackBar(String message) {
 
@@ -327,11 +419,7 @@ class _ProductListState extends State<ProductList> {
 
           this.count = productList.length;
           if(count > 0){
-            if(parentId == 0){
-              productList.sort((x,y) => x.expirationDate.compareTo(y.expirationDate));
-            } else {
-              productList.sort((x,y) => x.name.compareTo(y.name));
-            }
+            _sort();
           }
         });
       });

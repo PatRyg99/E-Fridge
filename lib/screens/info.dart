@@ -40,8 +40,7 @@ class _InfoState extends State<Info>{
                     "Products in the shopping list do not contain expiration date and can be "
                     "migrated to fridge by pressing arrow button and filling expiration date. "
                     "Each product contains fields: name, quantity, expiration date and image which can "
-                    "be added from local gallery or be made via built-in camera - option of adding image "
-                    "is currently disabled.",
+                    "be added from local gallery.",
                 )
               ),
               new ListTile(

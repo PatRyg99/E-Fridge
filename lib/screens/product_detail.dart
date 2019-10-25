@@ -52,13 +52,12 @@ class ProductDetailState extends State<ProductDetail> {
             scrollDirection: Axis.vertical,
             children: <Widget>[
               new GestureDetector(
-                onTap: null,//updateImage, // Adding photos currently bugged, debugging in progress
+                onTap: updateImage,
                 child: new Container(
                   width: MediaQuery.of(context).size.width,
                   height: 200.0,
-                  child: Image.asset("cutlery.png"),
-                  //child: product.image=='' ? Image.asset('cutlery.png', fit: BoxFit.contain)
-                  //    : Image.memory(image, fit: BoxFit.contain),
+                  child: product.image=='' ? Image.asset('cutlery.png', fit: BoxFit.contain)
+                      : Image.memory(image, fit: BoxFit.contain),
                 ),
               ),
 
@@ -150,22 +149,22 @@ class ProductDetailState extends State<ProductDetail> {
   }
 
   Future<void> updateImage() async {
-    List<int> imageBytes;
-    String base64Image;
-
     return showDialog(context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             content: new SingleChildScrollView(
               child: new ListBody(
                 children: <Widget>[
+                  /*
                   GestureDetector(
                     child: new Text('Take a picture'),
                     onTap: openCamera,
                   ),
+
                   Padding(
                     padding: EdgeInsets.all(8.0),
                   ),
+                  */
                   GestureDetector(
                     child: new Text('Select from gallery'),
                     onTap: openGallery,
